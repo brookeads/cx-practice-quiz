@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CX Practice Quiz — Choose Your Path</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-600: #0F6E56; --teal-800: #085041;
+    --blue-50: #E6F1FB; --blue-600: #185FA5; --blue-800: #0C447C;
+    --amber-50: #FAEEDA; --amber-600: #854F0B; --amber-800: #633806;
+    --coral-50: #FAECE7; --coral-600: #993C1D; --coral-800: #712B13;
+    --green-50: #EAF3DE; --green-400: #639922; --green-800: #27500A;
+    --red-50: #FCEBEB; --red-400: #E24B4A; --red-800: #501313;
+    --gray-50: #F7F6F2; --gray-100: #EEECEA; --gray-200: #D3D1C7; --gray-600: #5F5E5A; --gray-800: #2C2C2A;
+    --white: #FFFFFF;
+    --text-primary: #1A1A18;
+    --text-secondary: #5F5E5A;
+    --text-hint: #888780;
+    --border: rgba(0,0,0,0.1);
+    --border-med: rgba(0,0,0,0.18);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gray-50);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  .page-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .header-brand span {
+    color: var(--teal-600);
+  }
+
+  .header-meta {
+    font-size: 12px;
+    color: var(--text-hint);
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* INTRO */
+  .intro-hero {
+    text-align: center;
+    padding: 3rem 0 2rem;
+  }
+
+  .intro-eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal-600);
+    margin-bottom: 12px;
+  }
+
+  .intro-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .intro-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 10px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-hint);
+  }
+
+  .sme-pills {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  .pill {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+  }
+
+  .pill-teal { background: var(--teal-50); color: var(--teal-800); border-color: var(--teal-100); }
+  .pill-blue { background: var(--blue-50); color: var(--blue-800); border-color: #B5D4F4; }
+  .pill-amber { background: var(--amber-50); color: var(--amber-800); border-color: #FAC775; }
+  .pill-coral { background: var(--coral-50); color: var(--coral-800); border-color: #F5C4B3; }
+
+  .start-btn {
+    display: inline-block;
+    background: var(--teal-600);
+    color: var(--teal-50);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px 36px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  .start-btn:hover { background: var(--teal-800); }
+  .start-btn:active { transform: scale(0.98); }
+
+  .intro-note {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-hint);
+  }
+
+  /* QUIZ */
+  .quiz-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .prog-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--gray-100);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-right: 14px;
+  }
+
+  .prog-fill {
+    height: 100%;
+    background: var(--teal-600);
+    border-radius: 20px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .score-tag {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .score-tag strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .q-map {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .q-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-med);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-hint);
+    background: var(--white);
+    transition: all 0.2s;
+  }
+
+  .q-dot.done-c { background: var(--green-50); border-color: var(--green-400); color: var(--green-800); }
+  .q-dot.done-w { background: var(--red-50); border-color: var(--red-400); color: var(--red-800); }
+  .q-dot.active { border-color: var(--teal-600); border-width: 2px; color: var(--teal-600); }
+
+  .q-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .q-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .q-sit {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
+  .hint-toggle {
+    width: 100%;
+    background: var(--gray-50);
+    border: 1px dashed var(--border-med);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+
+  .hint-toggle:hover { background: var(--gray-100); }
+  .hint-toggle:disabled { cursor: default; opacity: 0.6; }
+
+  .hint-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--blue-50);
+    color: var(--blue-800);
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .hint-box {
+    background: var(--blue-50);
+    border-left: 3px solid var(--blue-600);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--blue-800);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    display: none;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .hint-box.show { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+
+  .choices-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-hint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .choice-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--white);
+    border: 1px solid var(--border-med);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+    margin-bottom: 8px;
+    line-height: 1.55;
+    transition: background 0.12s, border-color 0.12s, transform 0.08s;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .choice-btn:hover { background: var(--gray-50); border-color: var(--gray-200); }
+  .choice-btn:active { transform: scale(0.995); }
+  .choice-btn:disabled { cursor: default; }
+
+  .choice-letter {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gray-100);
+    color: var(--text-hint);
+    font-size: 10px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+  }
+
+  .choice-btn.correct { background: var(--green-50); border-color: var(--green-400); color: var(--green-800); }
+  .choice-btn.correct .choice-letter { background: var(--green-400); color: #fff; }
+  .choice-btn.wrong { background: var(--red-50); border-color: var(--red-400); color: var(--red-800); }
+  .choice-btn.wrong .choice-letter { background: var(--red-400); color: #fff; }
+
+  .feedback-card {
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 13px;
+    line-height: 1.65;
+    animation: fadeUp 0.25s ease;
+  }
+
+  .fb-correct { background: var(--green-50); border: 1px solid var(--green-400); color: var(--green-800); }
+  /* === ANIMATIONS === */
+  #fireworks-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 9999;
+  }
+
+  .emoji-burst {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: emojiBurst 1.8s ease forwards;
+  }
+
+  @keyframes emojiBurst {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    20%  { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+    50%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+    80%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  }
+
+  .banner-overlay {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 20px;
+    padding: 20px 36px;
+    text-align: center;
+    z-index: 9998;
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    animation: bannerPop 1.8s ease forwards;
+  }
+
+  .banner-overlay.correct-banner { border: 3px solid var(--green-400); }
+  .banner-overlay.wrong-banner { border: 3px solid var(--red-400); }
+
+  .banner-emoji { font-size: 48px; display: block; margin-bottom: 8px; }
+  .banner-text { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .banner-text.correct-text { color: var(--green-800); }
+  .banner-text.wrong-text { color: var(--red-800); }
+
+  @keyframes bannerPop {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+    25%  { transform: translate(-50%, -50%) scale(1.0); }
+    70%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  }
+
+  .fb-wrong { background: var(--red-50); border: 1px solid var(--red-400); color: var(--red-800); }
+
+  .fb-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .fb-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .icon-c { background: var(--green-400); color: #fff; }
+  .icon-w { background: var(--red-400); color: #fff; }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+  .btn {
+    background: var(--white);
+    border: 1px solid var(--border-med);
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: background 0.12s, transform 0.08s;
+  }
+
+  .btn:hover { background: var(--gray-50); }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: var(--teal-600);
+    color: var(--teal-50);
+    border-color: var(--teal-800);
+  }
+
+  .btn-primary:hover { background: var(--teal-800); }
+
+  /* RESULTS */
+  .results-hero {
+    text-align: center;
+    padding: 2.5rem 0 1.5rem;
+  }
+
+  .final-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 72px;
+    color: var(--text-primary);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .final-denom {
+    font-size: 14px;
+    color: var(--text-hint);
+    margin-top: 4px;
+    margin-bottom: 2rem;
+  }
+
+  .band-card {
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 14px;
+    line-height: 1.65;
+    border: 1px solid transparent;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-hint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .review-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .review-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .review-row:last-child { border-bottom: none; }
+
+  .r-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .r-c { background: var(--green-400); }
+  .r-w { background: var(--red-400); }
+
+  .r-title { font-weight: 500; color: var(--text-primary); }
+  .r-meta { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+
+  .hint-tag {
+    display: inline-block;
+    background: var(--amber-50);
+    color: var(--amber-800);
+    border-radius: 20px;
+    font-size: 10px;
+    padding: 1px 7px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .tips-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+  }
+
+  .tip-row {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .tip-row:last-child { border-bottom: none; }
+
+  .tip-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal-600);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  .results-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 520px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .intro-title { font-size: 32px; }
+    .final-num { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-brand">Choose Your <span>Path</span></div>
+  <div class="header-meta">CX Candidate Experience · Practice Quiz</div>
+</header>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div id="s-intro" class="screen active">
+    <div class="intro-hero">
+      <p class="intro-eyebrow">Trial run · individual or small group</p>
+      <h1 class="intro-title">Practice before<br><em>you play</em></h1>
+      <p class="intro-subtitle">Work through all 8 real CX scenarios from your SME team. A hint is available on each question — try to answer without it first! Full explanations appear after every choice.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">Scenarios</div></div>
+      <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">Hints available</div></div>
+      <div class="stat-card"><div class="stat-num">Retry</div><div class="stat-label">Any question</div></div>
+      <div class="stat-card"><div class="stat-num">SME</div><div class="stat-label">Explanations</div></div>
+    </div>
+
+    <div class="sme-pills">
+      <span class="pill pill-teal">Candidate contact</span>
+      <span class="pill pill-blue">Photo &amp; profile</span>
+      <span class="pill pill-amber">Tickets &amp; I9</span>
+      <span class="pill pill-coral">Shipping &amp; dates</span>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="start-btn" onclick="startQuiz()">Start practice</button>
+      <p class="intro-note">Each group can run this independently — no login required.</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="s-quiz" class="screen">
+    <div class="quiz-topbar">
+      <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <div class="score-tag">Score: <strong id="score-disp">0</strong> / <strong id="total-disp">0</strong></div>
+    </div>
+    <div class="q-map" id="q-map"></div>
+    <div id="q-content"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="s-results" class="screen">
+    <div class="results-hero">
+      <div class="final-num" id="final-num">0</div>
+      <div class="final-denom">out of 8 correct</div>
+    </div>
+    <div class="band-card" id="band-card"></div>
+
+    <p class="section-label">Question review</p>
+    <div class="review-card" id="review-list"></div>
+
+    <p class="section-label">Key takeaways</p>
+    <div class="tips-card" id="tips-list"></div>
+
+    <div class="results-btns">
+      <button class="btn btn-primary" onclick="restartQuiz()">Try again</button>
+      <button class="btn" onclick="showIntro()">Back to start</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    badgeClass: "pill-teal", type: "Candidate contact",
+    title: "No phone number in Quickbase",
+    sit: "You pull up a candidate's record in QB to make an outreach call and there's no phone number listed. You need to make contact to keep their onboarding moving forward.",
+    hint: "Think beyond QB — what other systems or documents might have the candidate's phone number? And what should you do to fix the data gap for next time?",
+    correct: 2,
+    choices: [
+      "Reach out to the candidate by email since no number is available.",
+      "Check EH 2.0 for a number. Nothing there either. Notify the SME and email the candidate.",
+      "Check EH 2.0 — no number. Check the candidate's resume, find a number, confirm with TAC/Recruiter it's okay to use, request EH 2.0 be updated, then call the candidate."
+    ],
+    why: "Best practice — you make the human connection by phone, solve the data gap by getting both systems updated, and keep momentum going. Email as a first contact is always slower and less personal.",
+    wrong: "You're on the right track contacting them — but think about whether you've exhausted all the ways to find a phone number first, and whether anything should be updated in your systems for next time."
+  },
+  {
+    badgeClass: "pill-teal", type: "Candidate decline",
+    title: "Candidate declines with CX",
+    sit: "During an outreach call a candidate tells you they are declining the position. You need to document this correctly so the full workflow closes — including equipment cancellation and recruiter notification.",
+    hint: "Think about every system and every person who needs to know about this decline. Who gets left out if you only notate in one place?",
+    correct: 2,
+    choices: [
+      "Notate the decline in QB only.",
+      "Notate in both QB and EH 2.0.",
+      "Inform the SME directly, notate in QB, and notate in EH 2.0."
+    ],
+    why: "This is the complete workflow. The SME notification triggers the Smartsheet, which signals logistics to cancel the equipment shipment. QB and EH 2.0 keep TAC and the recruiter informed. One action starts the whole chain.",
+    wrong: "Documentation is a great start — but check who else needs to know. If the SME isn't in the loop, the Smartsheet won't be submitted and equipment may still be on its way."
+  },
+  {
+    badgeClass: "pill-blue", type: "Photo guidance",
+    title: "Candidate keeps submitting rejected photos",
+    sit: "A candidate has submitted multiple photos that don't meet guidelines — black and white, no professional attire, animals in the background. Each one is being rejected and they seem confused about what's wrong.",
+    hint: "This candidate needs more than just the rules repeated to them. What two concrete options could you give them that would remove the guesswork completely?",
+    correct: 2,
+    choices: [
+      "Call to explain the requirements verbally, then follow up with an email of the photo guidelines.",
+      "Call to explain the rejection and requirements. Offer to upload a photo for them if they send it to you. Email the requirements with the specific issues highlighted.",
+      "Call to explain the specific rejection reasons clearly. Email the requirements with issues highlighted and examples. Offer two options: send 2 photos for you to choose from, OR schedule a Zoom so you can take a screenshot for them."
+    ],
+    why: "Giving two structured options removes the guesswork entirely. Requesting 2 photos adds a backup. The Zoom option solves the problem completely for candidates who are really stuck. This prevents the back-and-forth cycle.",
+    wrong: "You're addressing the issue — good. But think about how to completely eliminate the guessing game for the candidate. What could you offer that means they never have to wonder if their next photo will pass?"
+  },
+  {
+    badgeClass: "pill-blue", type: "Profile completion",
+    title: "Candidate not completing profile before Start Date",
+    sit: "A candidate's only remaining item is their profile. Despite multiple outreach attempts you can't get confirmation they've completed it. Their Start Date is approaching.",
+    hint: "Look at your notes — how many times have you reached out? That number is a signal. And have you actually asked whether they're having trouble, or just reminded them it's needed?",
+    correct: 2,
+    choices: [
+      "Call, email, and text to remind them to log in and complete their profile before their SD.",
+      "Call, email, and text — and explicitly state that the profile is required to access training on their Start Date.",
+      "Call, email, and text with the deadline and the requirement. Check your notes — if it's been 6+ outreach attempts, proactively offer to walk them through the profile completion live on a call."
+    ],
+    why: "You're not just reminding — you're diagnosing. After 6+ attempts, the candidate is likely stuck technically but hasn't said so. Offering a live walkthrough opens that door and drives real completion, not just contact.",
+    wrong: "Setting expectations is important — good thinking. But after repeated attempts, ask yourself: why haven't they done it yet? Have you offered to help them complete it directly rather than just nudging them?"
+  },
+  {
+    badgeClass: "pill-amber", type: "Ticket management",
+    title: "Candidate already called service desk but issue isn't resolved",
+    sit: "A candidate says they're having trouble completing an IEP item and have already called the service desk — but the issue still isn't fixed. They're frustrated and looking to you for a resolution.",
+    hint: "The candidate has already tried two channels. Before sending them to a third, what could you check right now that would give you a clearer picture of what's actually happening with their ticket?",
+    correct: 2,
+    choices: [
+      "Let them know the service desk can take 24–48 hours to respond and encourage them to wait.",
+      "Ask the candidate to call the service desk again for additional help.",
+      "Pull up their missing items and offer troubleshooting. Check ServiceNow for any open tickets — review the status, whether the issue was documented correctly, and whether HR is involved. Then guide them to a one-call resolution."
+    ],
+    why: "Taking ownership instead of deflecting is what sets great CX apart. Checking ServiceNow gives you the full picture — you can see if the ticket was understood correctly and whether it's actually being worked. The candidate should never have to make that call again.",
+    wrong: "Think about what you have access to right now. Before sending the candidate anywhere else, what can you look up to understand where their issue actually stands — so you can give them a real answer instead of a redirect?"
+  },
+  {
+    badgeClass: "pill-amber", type: "I9 completion",
+    title: "Candidate asking about their I9 status",
+    sit: "A candidate asks whether their I9 is showing as complete. They've finished other onboarding items but Part II isn't showing a checkmark. In some cases an assignee was supposed to complete Part II but hasn't yet.",
+    hint: "The candidate has already reached out to you. What can you do on their behalf — without making them contact yet another person — to get this resolved?",
+    correct: 2,
+    choices: [
+      "Check back office and QB for date stamps and checkmarks. Tell the candidate you don't see the checkmark and ask them to complete their I9.",
+      "Check QB for the checkmark and ask the candidate to email the I9 team for help.",
+      "Check back office and QB to confirm Part I and II status. If incomplete, reach out to the I9 Slack channel on the candidate's behalf. If they need direct support, arrange for an I9 rep to contact them directly. Notate everything."
+    ],
+    why: "You're acting as the candidate's advocate — going to the I9 team for them, not sending them there alone. One call, full resolution, candidate confidence maintained. Especially critical during Start Date week.",
+    wrong: "The candidate came to you for help — think about how to keep them from having to make yet another call. What can you reach out to on their behalf so this gets resolved in one interaction?"
+  },
+  {
+    badgeClass: "pill-coral", type: "Shipping & equipment",
+    title: "Candidate worried about missing equipment delivery",
+    sit: "A candidate works full-time and is worried they won't be home when their equipment arrives. They want to make sure it gets to them before their Start Date.",
+    hint: "What if they don't have anyone at home AND the drop-off location doesn't work for them? Is there a third option that still gets them their equipment on time?",
+    correct: 2,
+    choices: [
+      "Let them know they don't have to be present — someone over 18 can sign for the package.",
+      "Inform them a family member or friend can sign, and mention the option of rerouting to a drop-off location.",
+      "If neither home delivery nor a drop-off location works — offer that equipment can be shipped to a trusted neighbor, family member, or friend who can receive and sign for it on their behalf."
+    ],
+    why: "You're not stopping at the first answer. You're finding every possible path to make sure the candidate has their equipment on Start Date — that's purposeful service in action.",
+    wrong: "Good options so far — but push further. What if both of those solutions don't work for this candidate? Is there still a way to make sure they have their equipment ready for Day 1?"
+  },
+  {
+    badgeClass: "pill-coral", type: "Start date change",
+    title: "Candidate wants to change their Start Date",
+    sit: "A candidate reaches out saying they're interested in changing their Start Date. You need to document the request and get the right people moving quickly so the candidate hears back in time.",
+    hint: "Email is good — but what faster channel could you use to make sure the recruiter sees this urgently and acts on it right away?",
+    correct: 2,
+    choices: [
+      "Notate in QB that the candidate is interested in a Start Date change.",
+      "Notate in QB and EH 2.0, then send the proper email template to start the process.",
+      "Notate in QB and EH 2.0, send the email to all parties marked high priority, AND send a Slack to the recruiter flagging the request urgently. Document every step."
+    ],
+    why: "Slack gets the recruiter's attention immediately without relying on email alone. The high-priority flag communicates urgency. Full documentation means nothing falls through the cracks — and the candidate gets their answer fast.",
+    wrong: "You've got the documentation right — great. Now think about speed. Is there a faster way to make sure the recruiter actually sees this and acts on it today, rather than whenever they check email?"
+  }
+];
+
+const LETTERS = ['A', 'B', 'C'];
+let cur = 0, correct = 0, results = [], hintShown = false, answered = false, secondAttempt = false;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showIntro() { showScreen('s-intro'); }
+
+function startQuiz() {
+  cur = 0; correct = 0; results = [];
+  showScreen('s-quiz');
+  renderQ();
+}
+
+function restartQuiz() {
+  cur = 0; correct = 0; results = [];
+  renderQ();
+  showScreen('s-quiz');
+}
+
+function renderMap() {
+  const map = document.getElementById('q-map');
+  map.innerHTML = '';
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'q-dot';
+    d.textContent = i + 1;
+    if (i < results.length) d.className = 'q-dot ' + (results[i].correct ? 'done-c' : 'done-w');
+    else if (i === cur) d.className = 'q-dot active';
+    map.appendChild(d);
+  }
+}
+
+function renderQ() {
+  hintShown = false; answered = false; secondAttempt = false;
+  const q = QUESTIONS[cur];
+  document.getElementById('score-disp').textContent = correct;
+  document.getElementById('total-disp').textContent = results.length;
+  document.getElementById('prog').style.width = Math.round((cur / QUESTIONS.length) * 100) + '%';
+  renderMap();
+
+  let html = `
+    <div class="q-card">
+      <span class="pill ${q.badgeClass}" style="margin-bottom:10px;">${q.type}</span>
+      <h2 class="q-title">${q.title}</h2>
+      <p class="q-sit">${q.sit}</p>
+    </div>
+    <button class="hint-toggle" id="hint-btn" onclick="showHint()">
+      <span class="hint-icon">?</span>
+      Need a hint? Tap to reveal a thinking clue
+    </button>
+    <div class="hint-box" id="hint-box">${q.hint}</div>
+    <p class="choices-label">Which path does your group choose?</p>
+  `;
+
+  q.choices.forEach((c, i) => {
+    html += `
+      <button class="choice-btn" id="cb-${i}" onclick="answer(${i})">
+        <span class="choice-letter">${LETTERS[i]}</span>
+        <span>${c}</span>
+      </button>
+    `;
+  });
+
+  html += `<div id="feedback-area"></div>`;
+  document.getElementById('q-content').innerHTML = html;
+}
+
+function showHint() {
+  hintShown = true;
+  document.getElementById('hint-box').classList.add('show');
+  const btn = document.getElementById('hint-btn');
+  btn.textContent = 'Hint revealed';
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+}
+
+function answer(idx) {
+  if (answered) return;
+  const q = QUESTIONS[cur];
+  const isCorrect = idx === q.correct;
+
+  if (!isCorrect && !secondAttempt) {
+    // First wrong attempt — give a nudge, re-enable all except the wrong one
+    secondAttempt = true;
+    document.querySelectorAll('.choice-btn').forEach((b, i) => {
+      if (i === idx) {
+        b.classList.add('wrong');
+        b.disabled = true;
+      }
+    });
+    const nudge = document.createElement('div');
+    nudge.id = 'nudge-box';
+    nudge.className = 'feedback-card fb-wrong';
+    nudge.style.marginTop = '1rem';
+    nudge.innerHTML = `
+      <div class="fb-title">
+        <span class="fb-icon icon-w">✗</span>
+        Not quite — one more try!
+      </div>
+      <p>That wasn't the best path. Talk it through as a group — the hint is still available if you need it.</p>
+      <p style="margin-top:8px;font-size:12px;opacity:0.75;">One attempt remaining — choose from the remaining options above.</p>
+    `;
+    showBanner('nudge');
+    document.getElementById('feedback-area').innerHTML = '';
+    document.getElementById('feedback-area').appendChild(nudge);
+    return;
+  }
+
+  // Final answer (correct on any attempt, or second wrong attempt)
+  answered = true;
+  const gotItRight = isCorrect;
+
+  document.querySelectorAll('.choice-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === idx && !isCorrect) b.classList.add('wrong');
+    if (gotItRight && i === idx) b.classList.add('correct');
+    if (!gotItRight && i === q.correct) b.classList.add('correct');
+  });
+
+  if (gotItRight) { showBanner(secondAttempt ? 'correct-second' : 'correct'); } else { showBanner('wrong'); }
+  if (gotItRight) correct++;
+  results.push({ title: q.title, type: q.type, correct: gotItRight, hintUsed: hintShown, tookSecondAttempt: secondAttempt });
+  document.getElementById('score-disp').textContent = correct;
+  document.getElementById('total-disp').textContent = results.length;
+  renderMap();
+
+  const isLast = cur === QUESTIONS.length - 1;
+  let secondAttemptNote = secondAttempt && gotItRight ? '<p style="margin-top:8px;font-size:12px;opacity:0.75;">Got it on the second try — good recovery!</p>' : '';
+  let fb = `
+    <div class="feedback-card ${gotItRight ? 'fb-correct' : 'fb-wrong'}">
+      <div class="fb-title">
+        <span class="fb-icon ${gotItRight ? 'icon-c' : 'icon-w'}">${gotItRight ? '✓' : '✗'}</span>
+        ${gotItRight ? 'Correct — great choice!' : "Here's the best path and why"}
+      </div>
+      <p>${q.why}</p>
+      ${hintShown && gotItRight ? '<p style="margin-top:8px;font-size:12px;opacity:0.75;">You used the hint on this one.</p>' : ''}
+      ${secondAttemptNote}
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="${isLast ? 'showResults()' : 'nextQ()'}">${isLast ? 'See my results' : 'Next question →'}</button>
+    </div>
+  `;
+
+  document.getElementById('feedback-area').innerHTML = fb;
+}
+
+
+function launchFireworks() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'fireworks-canvas';
+  document.body.appendChild(canvas);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+
+  const particles = [];
+  const colors = ['#639922','#1D9E75','#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7'];
+
+  for (let b = 0; b < 6; b++) {
+    setTimeout(() => {
+      const bx = Math.random() * canvas.width;
+      const by = Math.random() * canvas.height * 0.6;
+      for (let i = 0; i < 40; i++) {
+        const angle = (Math.PI * 2 / 40) * i;
+        const speed = 3 + Math.random() * 5;
+        particles.push({
+          x: bx, y: by,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          radius: 2 + Math.random() * 3
+        });
+      }
+    }, b * 250);
+  }
+
+  let frame;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.1; p.alpha -= 0.015;
+      ctx.globalAlpha = Math.max(p.alpha, 0);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    });
+    if (particles.some(p => p.alpha > 0)) {
+      frame = requestAnimationFrame(animate);
+    } else {
+      cancelAnimationFrame(frame);
+      canvas.remove();
+    }
+  }
+  animate();
+}
+
+function showBanner(type) {
+  // Remove any existing banners
+  document.querySelectorAll('.banner-overlay').forEach(b => b.remove());
+
+  const banner = document.createElement('div');
+  if (type === 'correct') {
+    banner.className = 'banner-overlay correct-banner';
+    banner.innerHTML = '<span class="banner-emoji">🎉</span><div class="banner-text correct-text">Great choice!</div>';
+    launchFireworks();
+  } else if (type === 'correct-second') {
+    banner.className = 'banner-overlay correct-banner';
+    banner.innerHTML = '<span class="banner-emoji">💪</span><div class="banner-text correct-text">Got it on the second try!</div>';
+    launchFireworks();
+  } else if (type === 'nudge') {
+    banner.className = 'banner-overlay wrong-banner';
+    banner.innerHTML = '<span class="banner-emoji">🤔</span><div class="banner-text wrong-text">Think it through...</div>';
+  } else {
+    banner.className = 'banner-overlay wrong-banner';
+    banner.innerHTML = '<span class="banner-emoji">💡</span><div class="banner-text wrong-text">Good try &#8212; here&#39;s why!</div>';
+  }
+  document.body.appendChild(banner);
+  setTimeout(() => banner.remove(), 1900);
+}
+
+function retryQ() { secondAttempt = false; renderQ(); }
+function nextQ() { cur++; renderQ(); }
+
+function showResults() {
+  showScreen('s-results');
+  document.getElementById('final-num').textContent = correct;
+
+  const pct = correct / QUESTIONS.length;
+  let band, bg, borderColor;
+  if (pct >= 0.875) {
+    band = "Excellent work! You nailed almost every scenario. Your instincts around ownership, documentation, and one-call resolution are strong — you're ready for the team game.";
+    bg = '#EAF3DE'; borderColor = '#97C459';
+  } else if (pct >= 0.625) {
+    band = "Solid performance — a few tricky ones caught you out. Review the misses below and focus on the 'why' before joining the group session.";
+    bg = '#FAEEDA'; borderColor = '#EF9F27';
+  } else {
+    band = "Good practice session! Read through the explanations carefully below — these are real situations and the nuances matter. Try again when you're ready.";
+    bg = '#FAECE7'; borderColor = '#F0997B';
+  }
+
+  const bc = document.getElementById('band-card');
+  bc.style.background = bg;
+  bc.style.borderColor = borderColor;
+  bc.innerHTML = `<p>${band}</p>`;
+
+  let rl = '';
+  results.forEach((r, i) => {
+    rl += `
+      <div class="review-row">
+        <div class="r-dot ${r.correct ? 'r-c' : 'r-w'}"></div>
+        <div>
+          <div class="r-title">${r.title} ${r.hintUsed ? '<span class="hint-tag">hint used</span>' : ''}</div>
+          <div class="r-meta">${r.type} · ${r.correct ? 'Correct' : 'Incorrect'}</div>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('review-list').innerHTML = rl;
+
+  const greatCount = results.filter(r => r.correct).length;
+  const tips = [
+    greatCount >= 7
+      ? "Your group consistently chose ownership over deflection — that's the foundation of great CX."
+      : "Focus on taking full ownership of the candidate's issue end-to-end, rather than redirecting to another team.",
+    results.some(r => !r.correct && (r.type === 'Ticket management' || r.type === 'I9 completion'))
+      ? "For ticket and I9 issues: always check ServiceNow first and act as the candidate's advocate — reach out to teams on their behalf."
+      : "Strong ticket management instincts — checking ServiceNow before responding is a great habit.",
+    results.some(r => !r.correct && (r.type === 'Candidate contact' || r.type === 'Candidate decline'))
+      ? "For candidate contact and decline: the full workflow matters — QB + EH 2.0 + SME notification closes every loop."
+      : "Solid documentation instincts — QB + EH 2.0 + SME notification is the complete chain.",
+    "One-call resolution is the goal in every scenario. Ask: what would it take to solve this completely right now, without the candidate having to call again?"
+  ];
+
+  document.getElementById('tips-list').innerHTML = tips.map(t =>
+    `<div class="tip-row"><div class="tip-bullet"></div><div>${t}</div></div>`
+  ).join('');
+}
+</script>
+</body>
+</html>
