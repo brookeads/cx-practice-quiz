@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CX Practice Quiz — Choose Your Path</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-600: #0F6E56; --teal-800: #085041;
+    --blue-50: #E6F1FB; --blue-600: #185FA5; --blue-800: #0C447C;
+    --amber-50: #FAEEDA; --amber-600: #854F0B; --amber-800: #633806;
+    --coral-50: #FAECE7; --coral-600: #993C1D; --coral-800: #712B13;
+    --green-50: #EAF3DE; --green-400: #639922; --green-800: #27500A;
+    --red-50: #FCEBEB; --red-400: #E24B4A; --red-800: #501313;
+    --gray-50: #F7F6F2; --gray-100: #EEECEA; --gray-200: #D3D1C7; --gray-600: #5F5E5A; --gray-800: #2C2C2A;
+    --white: #FFFFFF;
+    --text-primary: #1A1A18;
+    --text-secondary: #5F5E5A;
+    --text-hint: #888780;
+    --border: rgba(0,0,0,0.1);
+    --border-med: rgba(0,0,0,0.18);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0a0f1e;
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Animated star field background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, rgba(15, 110, 86, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(24, 95, 165, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 80%, rgba(153, 60, 29, 0.10) 0%, transparent 50%),
+      linear-gradient(135deg, #0a0f1e 0%, #0d1a2e 50%, #0a1520 100%);
+    z-index: -2;
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0%   { opacity: 0.8; }
+    100% { opacity: 1; }
+  }
+
+  /* Floating orb decorations */
+  body::after {
+    content: '';
+    position: fixed;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(15,110,86,0.08) 0%, transparent 70%);
+    top: -100px; right: -100px;
+    z-index: -1;
+    animation: orbFloat 10s ease-in-out infinite alternate;
+  }
+
+  @keyframes orbFloat {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-30px, 40px) scale(1.1); }
+  }
+
+  /* Stars canvas */
+  #stars-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .page-header {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 44px;
+  }
+
+  .header-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+
+  .header-brand span {
+    color: #4ECDC4;
+  }
+
+  .header-meta {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0.5rem 1rem 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* INTRO */
+  .intro-hero {
+    text-align: center;
+    padding: 3rem 0 2rem;
+  }
+
+  .intro-eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4ECDC4;
+    margin-bottom: 12px;
+  }
+
+  .intro-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    text-shadow: 0 0 60px rgba(78,205,196,0.3);
+  }
+
+  .intro-subtitle {
+    font-size: 15px;
+    color: rgba(255,255,255,0.6);
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-md);
+    padding: 14px 10px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(78,205,196,0.15);
+  }
+
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: #4ECDC4;
+    margin-bottom: 2px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .sme-pills {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  .pill {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+  }
+
+  .pill-teal { background: var(--teal-50); color: var(--teal-800); border-color: var(--teal-100); }
+  .pill-blue { background: var(--blue-50); color: var(--blue-800); border-color: #B5D4F4; }
+  .pill-amber { background: var(--amber-50); color: var(--amber-800); border-color: #FAC775; }
+  .pill-coral { background: var(--coral-50); color: var(--coral-800); border-color: #F5C4B3; }
+
+  .start-btn {
+    display: inline-block;
+    background: var(--teal-600);
+    color: var(--teal-50);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px 36px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  .start-btn:hover { background: var(--teal-800); }
+  .start-btn:active { transform: scale(0.98); }
+
+  .intro-note {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-hint);
+  }
+
+  /* QUIZ */
+  .quiz-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .prog-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--gray-100);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-right: 14px;
+  }
+
+  .prog-fill {
+    height: 100%;
+    background: var(--teal-600);
+    border-radius: 20px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .score-tag {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .score-tag strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .q-map {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .q-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-med);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-hint);
+    background: var(--white);
+    transition: all 0.2s;
+  }
+
+  .q-dot.done-c { background: var(--green-50); border-color: var(--green-400); color: var(--green-800); }
+  .q-dot.done-w { background: var(--red-50); border-color: var(--red-400); color: var(--red-800); }
+  .q-dot.active { border-color: var(--teal-600); border-width: 2px; color: var(--teal-600); }
+
+  .q-card {
+    background: rgba(255,255,255,0.13);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius-md);
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 0.6rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+    animation: fadeUp 0.3s ease;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .q-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: #ffffff !important;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  }
+
+  .q-sit {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #ffffff !important;
+    font-weight: 500;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+  }
+
+  .hint-toggle {
+    width: 100%;
+    background: var(--gray-50);
+    border: 1px dashed var(--border-med);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+
+  .hint-toggle:hover { background: var(--gray-100); }
+  .hint-toggle:disabled { cursor: default; opacity: 0.6; }
+
+
+
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+
+
+
+  /* Hint panel in left column */
+  /* Hint banner — full width above answers inside quiz-main */
+  .hint-banner {
+    background: rgba(255, 200, 0, 0.12);
+    border: 1px solid rgba(255, 180, 0, 0.45);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    animation: fadeUp 0.3s ease;
+    width: 100%;
+  }
+
+  .hint-banner-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #FFB300;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 3px;
+  }
+
+  .hint-banner-text {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* Sparkle attention ring around Quick Tip */
+  .easy-btn-wrap {
+    position: relative;
+  }
+
+  .easy-btn-wrap::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: -8px;
+    right: -8px; bottom: -8px;
+    border-radius: 50%;
+    border: 2.5px dashed rgba(100, 220, 80, 0.6);
+    animation: spinRing 4s linear infinite;
+    pointer-events: none;
+  }
+
+  .easy-btn-wrap::after {
+    content: '';
+    position: absolute;
+    top: -16px; left: -16px;
+    right: -16px; bottom: -16px;
+    border-radius: 50%;
+    border: 2px dotted rgba(255, 200, 0, 0.35);
+    animation: spinRing 7s linear infinite reverse;
+    pointer-events: none;
+  }
+
+  @keyframes spinRing {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* Sparkle stars that float around the button */
+  .sparkle-star {
+    position: absolute;
+    font-size: 14px;
+    pointer-events: none;
+    animation: sparklePop 2.5s ease-in-out infinite;
+    z-index: 10;
+  }
+
+  .sparkle-star:nth-child(1) { top: -14px; left: 50%; animation-delay: 0s; }
+  .sparkle-star:nth-child(2) { top: 20%; right: -14px; animation-delay: 0.5s; }
+  .sparkle-star:nth-child(3) { bottom: -14px; left: 50%; animation-delay: 1s; }
+  .sparkle-star:nth-child(4) { top: 20%; left: -14px; animation-delay: 1.5s; }
+
+  @keyframes sparklePop {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50%       { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Label under button */
+  .easy-btn-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 6px;
+  }
+
+  .easy-btn-sub.used {
+    color: rgba(255,255,255,0.2);
+  }
+
+
+  /* Thinking prompt at bottom of each answer card */
+  .choice-prompt {
+    margin-top: auto;
+    padding-top: 8px;
+    font-size: 11px;
+    color: rgba(30,30,30,0.75);
+    font-style: italic;
+    font-weight: 500;
+    border-top: 1px solid rgba(0,0,0,0.12);
+    width: 100%;
+    line-height: 1.4;
+  }
+
+  .choice-text {
+    flex: 1;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: #1A1A18;
+  }
+
+  .choices-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  /* Horizontal grid for answer options — full width */
+  .choices-grid-wrap {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .choices-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: stretch;
+  }
+
+  .choice-btn {
+    width: 100%;
+    min-height: 180px;
+    height: 100%;
+    text-align: left;
+    background: #ffffff;
+    border: 2px solid rgba(0,0,0,0.08);
+    border-radius: var(--radius-sm);
+    padding: 14px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    color: #1A1A18;
+    cursor: pointer;
+    margin-bottom: 0;
+    line-height: 1.5;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .choice-btn:hover {
+    background: #f0fdf8;
+    border-color: #1D9E75;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(29,158,117,0.2);
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn:disabled { cursor: default; transform: none; }
+
+  .choice-letter {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #1A1A18;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .choice-btn.correct { background: #EAF3DE; border-color: #639922; color: #1A1A18; }
+  .choice-btn.correct .choice-letter { background: #639922; color: #fff; }
+  .choice-btn.wrong { background: #FCEBEB; border-color: #E24B4A; color: #1A1A18; }
+  .choice-btn.wrong .choice-letter { background: #E24B4A; color: #fff; }
+
+  .feedback-card {
+    border-radius: var(--radius-sm);
+    padding: 1.2rem 1.4rem;
+    margin: 0.5rem 0;
+    font-size: 13px;
+    line-height: 1.6;
+    animation: fadeUp 0.25s ease;
+    min-height: 160px;
+  }
+
+
+  /* GIF in feedback card — floated right so text wraps around it */
+  .feedback-gif {
+    float: right;
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    margin: 0 0 8px 16px;
+    display: block;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .feedback-card::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+  .fb-correct { background: var(--green-50); border: 1px solid var(--green-400); color: var(--green-800); }
+  /* === ANIMATIONS === */
+  #fireworks-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 9999;
+  }
+
+  .emoji-burst {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: emojiBurst 1.8s ease forwards;
+  }
+
+  @keyframes emojiBurst {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    20%  { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+    50%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+    80%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  }
+
+  .banner-overlay {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 20px;
+    padding: 20px 36px;
+    text-align: center;
+    z-index: 9998;
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    animation: bannerPop 1.8s ease forwards;
+  }
+
+  .banner-overlay.correct-banner { border: 3px solid var(--green-400); }
+  .banner-overlay.wrong-banner { border: 3px solid var(--red-400); }
+
+  .banner-emoji { font-size: 48px; display: block; margin-bottom: 8px; }
+  .banner-text { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .banner-text.correct-text { color: var(--green-800); }
+  .banner-text.wrong-text { color: var(--red-800); }
+
+  @keyframes bannerPop {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+    25%  { transform: translate(-50%, -50%) scale(1.0); }
+    70%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  }
+
+  .fb-wrong { background: var(--red-50); border: 1px solid var(--red-400); color: var(--red-800); }
+
+  .fb-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .fb-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .icon-c { background: var(--green-400); color: #fff; }
+  .icon-w { background: var(--red-400); color: #fff; }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+  .btn {
+    background: var(--white);
+    border: 1px solid var(--border-med);
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: background 0.12s, transform 0.08s;
+  }
+
+  .btn:hover { background: var(--gray-50); }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: var(--teal-600);
+    color: var(--teal-50);
+    border-color: var(--teal-800);
+  }
+
+  .btn-primary:hover { background: var(--teal-800); }
+
+  /* RESULTS */
+  .results-hero {
+    text-align: center;
+    padding: 2.5rem 0 1.5rem;
+  }
+
+  .final-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 72px;
+    color: var(--text-primary);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .final-denom {
+    font-size: 14px;
+    color: var(--text-hint);
+    margin-top: 4px;
+    margin-bottom: 2rem;
+  }
+
+  .band-card {
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 14px;
+    line-height: 1.65;
+    border: 1px solid transparent;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-hint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .review-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .review-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .review-row:last-child { border-bottom: none; }
+
+  .r-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .r-c { background: var(--green-400); }
+  .r-w { background: var(--red-400); }
+
+  .r-title { font-weight: 500; color: rgba(255,255,255,0.9); }
+  .r-meta { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  .hint-tag {
+    display: inline-block;
+    background: var(--amber-50);
+    color: var(--amber-800);
+    border-radius: 20px;
+    font-size: 10px;
+    padding: 1px 7px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .tips-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+  }
+
+  .tip-row {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .tip-row:last-child { border-bottom: none; }
+
+  .tip-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal-600);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  .results-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 520px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .intro-title { font-size: 32px; }
+    .final-num { font-size: 56px; }
+  }
+
+  /* ===== HOST PANEL ===== */
+  .quiz-layout {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    height: calc(100vh - 80px);
+    overflow: hidden;
+  }
+
+  .quiz-main {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .quiz-main::-webkit-scrollbar { display: none; }
+
+  /* Easy Button side column */
+  .hint-side {
+    width: 100px;
+    max-width: 100px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 6px;
+    gap: 8px;
+  }
+
+  #host-panel {
+    width: 140px;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 10px 10px;
+    text-align: center;
+    position: sticky;
+    top: 6px;
+    transition: border-color 0.4s, box-shadow 0.4s;
+    animation: hostSlide 0.4s ease;
+  }
+
+  @keyframes hostSlide {
+    from { opacity: 0; transform: translateX(16px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .host-photo-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid #4ECDC4;
+    overflow: hidden;
+    margin: 0 auto 6px;
+    transition: border-color 0.4s, box-shadow 0.4s;
+  }
+
+  .host-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .host-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+    transition: color 0.4s;
+  }
+
+  .host-title {
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .host-bubble {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px 10px 10px 4px;
+    padding: 7px 8px;
+    text-align: left;
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .host-speech {
+    font-size: 10px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  .host-dot-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .host-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    transition: all 0.3s;
+  }
+
+  .hd-done { background: rgba(255,255,255,0.35); }
+
+  @media (max-width: 600px) {
+    .quiz-layout { flex-direction: column; gap: 12px; }
+    .hint-side { flex-direction: row; width: 100%; justify-content: center; padding-top: 0; position: relative; top: auto; }
+    #host-panel { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; position: relative; top: auto; }
+    .host-photo-wrap { width: 56px; height: 56px; flex-shrink: 0; margin: 0; }
+    .host-name { font-size: 13px; }
+    .host-dot-row { display: none; }
+    .host-bubble { margin-bottom: 0; flex: 1; }
+  }
+
+</style>
+</head>
+<body>
+<canvas id="stars-bg"></canvas>
+
+<header class="page-header">
+  <div class="header-brand">Choose Your <span>Path</span></div>
+  <div class="header-meta">CX Candidate Experience · Practice Quiz</div>
+</header>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div id="s-intro" class="screen active">
+    <div class="intro-hero">
+      <p class="intro-eyebrow">Trial run · individual or small group</p>
+      <h1 class="intro-title">Practice before<br><em>you play</em></h1>
+      <p class="intro-subtitle">Work through all 8 real CX scenarios from your SME team. A hint is available on each question — try to answer without it first! Full explanations appear after every choice.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">Scenarios</div></div>
+      <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">Hints available</div></div>
+      <div class="stat-card"><div class="stat-num">Retry</div><div class="stat-label">Any question</div></div>
+      <div class="stat-card"><div class="stat-num">SME</div><div class="stat-label">Explanations</div></div>
+    </div>
+
+    <div class="sme-pills">
+      <span class="pill pill-teal">Candidate contact</span>
+      <span class="pill pill-blue">Photo &amp; profile</span>
+      <span class="pill pill-amber">Tickets &amp; I9</span>
+      <span class="pill pill-coral">Shipping &amp; dates</span>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="start-btn" onclick="startQuiz()">Start practice</button>
+      <p class="intro-note">Each group can run this independently — no login required.</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="s-quiz" class="screen">
+    <div class="quiz-topbar">
+      <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <div class="score-tag">Score: <strong id="score-disp">0</strong> / <strong id="total-disp">0</strong></div>
+    </div>
+    <div class="q-map" id="q-map"></div>
+    <div class="quiz-layout">
+      <div class="hint-side" id="hint-side"></div>
+      <div class="quiz-main">
+        <div id="q-content"></div>
+      </div>
+      <div id="host-panel"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="s-results" class="screen">
+    <div class="results-hero">
+      <div class="final-num" id="final-num">0</div>
+      <div class="final-denom">out of 8 correct</div>
+    </div>
+    <div class="band-card" id="band-card"></div>
+
+    <p class="section-label">Question review</p>
+    <div class="review-card" id="review-list"></div>
+
+    <p class="section-label">Key takeaways</p>
+    <div class="tips-card" id="tips-list"></div>
+
+    <div class="results-btns">
+      <button class="btn btn-primary" onclick="restartQuiz()">Try again</button>
+      <button class="btn" onclick="showIntro()">Back to start</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+const HOSTS = {
+  'Lelawnie': {
+    photo: 'https://avatars.slack-edge.com/2025-11-19/9940981511223_d7ea17d3cd346025d671_original.png',
+    name: 'Lelawnie',
+    title: 'Candidate Contact Expert',
+    color: '#1D9E75',
+    glow: 'rgba(29,158,117,0.4)',
+    intro: ["Let's tackle this one together!", "I see this one a lot — think carefully!", "This one comes up every season.", "What would you do here?"]
+  },
+  'Jessica': {
+    photo: 'https://avatars.slack-edge.com/2024-06-03/7213869652323_438c1505b6871a225274_original.png',
+    name: 'Jessica',
+    title: 'Photo & Profile Expert',
+    color: '#4ECDC4',
+    glow: 'rgba(78,205,196,0.4)',
+    intro: ["Here's a tricky one from my experience!", "Think about the candidate's perspective.", "I wrote this one — choose wisely! 😄", "What does great CX look like here?"]
+  },
+  'Chantelle': {
+    photo: 'https://avatars.slack-edge.com/2025-12-05/10059846578773_c89679b12af69dc0a1d4_original.jpg',
+    name: 'Chantelle',
+    title: 'Tickets & I9 Expert',
+    color: '#EF9F27',
+    glow: 'rgba(239,159,39,0.4)',
+    intro: ["This scenario happens more than you think!", "Ownership is key here.", "I've seen all three paths — pick the best!", "Don't just redirect — dig in!"]
+  },
+  'Ralphie': {
+    photo: 'https://avatars.slack-edge.com/2026-03-05/10638658481538_ff47776bba761e09aed8_original.jpg',
+    name: 'Ralphie',
+    title: 'Shipping & Dates Expert',
+    color: '#FF6B6B',
+    glow: 'rgba(255,107,107,0.4)',
+    intro: ["Real situation from this season!", "Think about getting to yes here.", "Every candidate deserves a solution.", "Don't stop at the first option!"]
+  }
+};
+
+const QUESTION_HOSTS = ['Lelawnie','Lelawnie','Jessica','Jessica','Chantelle','Chantelle','Ralphie','Ralphie'];
+
+function renderHost(questionIndex) {
+  const hostKey = QUESTION_HOSTS[questionIndex];
+  const host = HOSTS[hostKey];
+  const intro = host.intro[Math.floor(Math.random() * host.intro.length)];
+  const panel = document.getElementById('host-panel');
+  if (!panel) return;
+
+  panel.style.borderColor = host.color;
+  panel.style.boxShadow = `0 0 30px ${host.glow}, 0 8px 32px rgba(0,0,0,0.4)`;
+  panel.innerHTML = `
+    <div class="host-photo-wrap" style="border-color:${host.color};box-shadow:0 0 20px ${host.glow};">
+      <img src="${host.photo}" class="host-photo" alt="${host.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><circle cx=%2240%22 cy=%2240%22 r=%2240%22 fill=%22%23333%22/><text x=%2240%22 y=%2247%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2228%22>${host.name[0]}</text></svg>'">
+    </div>
+    <div class="host-name" style="color:${host.color};">${host.name}</div>
+    <div class="host-title">${host.title}</div>
+    <div class="host-bubble">
+      <div class="host-bubble-tail"></div>
+      <p class="host-speech">"${intro}"</p>
+    </div>
+    <div class="host-dot-row">
+      ${QUESTION_HOSTS.map((k,i) => `<div class="host-dot ${i === questionIndex ? 'hd-active' : i < questionIndex ? 'hd-done' : ''}" style="${i === questionIndex ? 'background:'+host.color+';box-shadow:0 0 8px '+host.color : ''}"></div>`).join('')}
+    </div>
+  `;
+  panel.style.animation = 'none';
+  panel.offsetHeight; // reflow
+  panel.style.animation = 'hostSlide 0.4s ease';
+}
+
+function renderEasyBtn() {
+  const side = document.getElementById('hint-side');
+  if (!side) return;
+  const q = QUESTIONS[cur];
+  side.innerHTML = `
+    <div class="easy-btn-wrap" id="easy-btn-wrap">
+      <span class="sparkle-star">✨</span>
+      <span class="sparkle-star">⭐</span>
+      <span class="sparkle-star">✨</span>
+      <span class="sparkle-star">⭐</span>
+      <button class="easy-btn" id="hint-btn" onclick="showHint()" title="Quick Tip!">
+        <img src="data:image/png;base64,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" alt="Quick Tip" style="width:100%;height:100%;object-fit:contain;border-radius:50%;pointer-events:none;">
+      </button>
+      <div class="easy-btn-sub" id="hint-sub">tap for hint</div>
+    </div>
+  `;
+}
+
+
+// Per-question correct answer GIFs (index matches QUESTIONS array)
+const CORRECT_GIFS = [
+  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2h2dmJ4eGd2d2tybGxhM29lMHFnNjkzeDFnMzNkZHlxMmoxcW5nciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IQlNDEHahTlA6SglCv/giphy.gif',  // Q1 - Jimmy Fallon Great Answer
+  'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHk3OGI0ZWwxYWxsaDNxMjA4aGI4YnY2bmRjNDBuaHk2d2drZXRkeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZQAXlijP7E8cq18VUy/giphy.gif',  // Q2 - Squid Game Yes OK
+  'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGw3dXBtZ3lkcGNka2M2ZjF6aWtxZDY1Ym56NTlzemI2bmY4N2prbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wsncUQAWt1Z74JDipx/giphy.gif',  // Q3 - Ted Lasso Yes (Roy Kent)
+  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTAzbzJ4ZGUxZWdwbTM1d2Y0Z3R3cTc5ZHRxbzM1ZHZpaWp1YmhpcyZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/q1kBdDry3xudsp0DDm/200.gif',  // Q4 - Ted Lasso Yes (Ted)
+  'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDQya2hmamI1M3h1a2h4OHd4NzF2aTYzcW5uZmRwYzU1cXQ3ank2dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7jBNVboeHv6VjU2KN7/giphy.gif',  // Q5 - Kendrick Squabble Up GNX (Chantelle's questions!)
+  'https://media1.tenor.com/m/23X_NZH5IioAAAAC/stack-sinners.gif',  // Q6 - Kendrick Squabble Up GNX
+  'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWZsN3Y2djB3NzV5cWg4M3R4MDI2ano4YzF0ZmM1Y2tmMmUzMTV2biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XiLVqdK8O6OlX3T7uu/giphy.gif',  // Q7 - MLB Manny Machado celebration (Ralphie!)
+  'https://media1.tenor.com/m/ZgUoB9MyXEYAAAAC/whoopthereitis-whoop.gif',  // Q8 - Drake celebration
+];
+
+// Wrong answer GIF (same for all questions for now)
+const WRONG_GIF = 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGRibXlmdXVvMW5yNnZwdTE5dms2ejlvbnlvdmZ3MWtqY200d3g0bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y7FeigqSqcjLcqKNPL/giphy.gif';
+
+function getCorrectGif(questionIndex) {
+  return CORRECT_GIFS[questionIndex] || 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGRibXlmdXVvMW5yNnZwdTE5dms2ejlvbnlvdmZ3MWtqY200d3g0bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y7FeigqSqcjLcqKNPL/giphy.gif';
+}
+
+// Per-question wrong answer GIFs
+const WRONG_GIFS = [
+  'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGRibXlmdXVvMW5yNnZwdTE5dms2ejlvbnlvdmZ3MWtqY200d3g0bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y7FeigqSqcjLcqKNPL/giphy.gif',  // Q1 - Jimmy Fallon This Close
+  'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2hrcng1Y2hweDVyd3kxOGs3eWY3dGptazBkeG14am5sbWgxdzhqeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NTEyfNzEmOSlEmiVVM/giphy.gif',  // Q2 - Squid Game X No
+  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3pvNDlpZDFnaHZqMmowb2hlYzdtbzdxbzVueDNrOGh0dmI0eDJtZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gauyDtS5960viijNAV/giphy.gif',  // Q3 - Ted Lasso No (Coach Beard thumbs down)
+  'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmIzN2swcnR0aG0waWp0Z2N1ZzNrdGR3OXZ3NnVnNWx3NWdmNzkzaSZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/7gQxV9caUY1lHDgMnr/200.gif',  // Q4 - Ted Lasso No (Ted shake head)
+  'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWVkMWNneGx5YWN0ZHQwcHhhYzE1cGgxbW1xZWFoN3Y1eDA4MTI4eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pIuOiIUsVVFOX8CuwD/giphy.gif',  // Q5 - Kendrick Rich Spirit (Chantelle's questions!)
+  'https://media1.tenor.com/m/CDjwjDxIyk8AAAAd/hold-on-just-a-minute-smoke.gif',  // Q6 - Kendrick Rich Spirit
+  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2JqdnByYXhvNDdlMXZ3YmxmbmVwNnczaXdpNzc4aHIxMDR3MnZ2ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d1hnKin4kIz6JlHsr0/giphy.gif',  // Q7 - MLB Shohei Ohtani ew (Ralphie!)
+  'https://media1.tenor.com/m/hfTLXdjdIo4AAAAC/its-not-this-one-elvis-the-alien.gif',  // Q8 - Drake disappointed
+];
+
+function getWrongGif(questionIndex) {
+  return WRONG_GIFS[questionIndex] || 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGRibXlmdXVvMW5yNnZwdTE5dms2ejlvbnlvdmZ3MWtqY200d3g0bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y7FeigqSqcjLcqKNPL/giphy.gif';
+}
+
+const QUESTIONS = [
+  {
+    type: "Candidate contact",
+    badgeClass: "pill-teal",
+    title: "No phone number and candidate is unresponsive",
+    sit: "Start date is 1 week away and after initially being responsive to email and completing shipping, the candidate is no longer responding to emails. There is no phone number in QB and action items are incomplete. What are the best next steps?",
+    hint: "Think beyond QB — what other systems or documents might have the candidate's phone number? And what should you do to fix the data gap for next time?",
+    correct: 2,
+    choices: [
+      "CX continues to reach out to the candidate via email for incomplete action items and inquires about a phone number that we can contact them with.",
+      "CX looks up the candidate in EH 2.0 for a phone number, however there is no number there. CX notifies SME that the candidate has no phone number on file. CX reaches out to the candidate via email to ask for a number that works.",
+      "CX looks up the candidate in EH 2.0 and reviews beyond the profile information, including the candidate's resume. CX sees a number, reaches out, confirms with TAC and recruiting it's the best contact number, requests EH 2.0 be updated, and documents the effort in both QB and EH 2.0."
+    ],
+    why: "This is best practice to make that human connection and let candidates know they have an actual person they can go to. Requesting the phone number be updated solves the problem for other team members trying to contact, and pending preference, may also open up future connection via text.",
+    wrong: "You're on the right track — but think about whether you've exhausted all ways to find a phone number, and whether anything should be updated in your systems for next time."
+  },
+  {
+    type: "Candidate decline",
+    badgeClass: "pill-teal",
+    title: "Candidate hints at withdrawing from the role",
+    sit: "A candidate is scheduled to start in the next 2 weeks. During a check-in call the candidate mentions they are 'still considering a few options' and 'had a final interview with another company,' indicating hesitancy about the role. The CX notes this hint and wonders about a potential withdraw.",
+    hint: "Think about every system and every person who needs to know. Who gets left out if you only notate without probing or escalating?",
+    correct: 0,
+    choices: [
+      "CX probes the candidate for the possible reason for hesitation. Example: 'Is there any information I can clarify for you?' CX immediately informs the SME of the potential decline and the specific reason, and notates in QB and EH 2.0. A clear decline is confirmed before any action steps occur.",
+      "CX notates in QB that the candidate may decline, explaining they are not sure about continuing with the role.",
+      "CX updates status and notes in both QB and EH 2.0 with 'Candidate may decline - awaiting final confirmation,' then makes a note to watch EH 2.0 for updates and follow up with the candidate week of start to confirm."
+    ],
+    why: "This is best practice because it immediately triggers the SME's visibility for any candidate follow-up from the Recruiter, providing a final opportunity to save the candidate. It also ensures all systems (QB, EH 2.0) and stakeholders (SME, TAC, Recruiting) are fully aligned to manage equipment and headcount effectively.",
+    wrong: "Documentation is a great start — but think about who else needs to know, and whether you've tried to understand the candidate's actual hesitation before just noting it."
+  },
+  {
+    type: "Photo guidance",
+    badgeClass: "pill-blue",
+    title: "Candidate keeps submitting rejected photos",
+    sit: "A new hire candidate is having a hard time understanding the photo requirements. The candidate keeps submitting photos that do not meet the guidelines — black and white, without professional attire, or with animals in the background. Their Start Date is a few days away.",
+    hint: "This candidate needs more than just the rules repeated to them. What two concrete options could you give them that would remove the guesswork completely?",
+    correct: 1,
+    choices: [
+      "CX calls the candidate and tells them verbally the photo requirements after the photo was rejected. CX follows up with an email of the candidate photo requirements and lets the candidate know to get it in as soon as possible.",
+      "CX calls the candidate to let them know the photo was rejected and why in clear and concise terms. While on the phone, CX sends the requirements highlighting the problems with examples. CX then offers two options: upload the next photo for them (requesting 2 photos for options), OR schedule a Zoom with appropriate attire and background so CX can take a screenshot and upload it.",
+      "CX calls the candidate and lets them know the photo was rejected. CX explains the requirements and why the photo was rejected, and offers for the candidate to email a photo to be uploaded for review and feedback."
+    ],
+    why: "By offering a proactive strategy with multiple options and specific process steps, the candidate receives both a verbal explanation and supporting documentation. Offering two distinct solutions empowers the candidate to choose the method that suits them best, minimizes repetitive communication, and leads toward a higher likelihood of an approved photo by start date.",
+    wrong: "You're addressing the issue — good. But think about how to completely eliminate the guessing game. What could you offer that means they never have to wonder if their next photo will pass?"
+  },
+  {
+    type: "Profile completion",
+    badgeClass: "pill-blue",
+    title: "Candidate not completing profile before Start Date",
+    sit: "A candidate's last item is their profile. The candidate chose option 1 for onboarding preferences but the CX cannot get through to them on whether or not they need help completing it.",
+    hint: "Think about how many times you've reached out. Are you assuming the candidate knows what's wrong, or diagnosing whether there might be a technical issue?",
+    correct: 0,
+    choices: [
+      "CX leads the conversation with recognition of all other items completed and explains the continued outreach is due to the profile not marked as complete and a possible technical issue. CX offers the solution steps of hitting verify, reiterates the requirement change on start date, and offers multiple options including a walkthrough when available or on start date.",
+      "CX uses the triple threat — a call, email, and text on the same day — and reaches out every single day until they get a response to advise the candidate to log in and complete their profile before their Start Date.",
+      "CX called, emailed and texted the candidate to let them know they still had their profile left to complete. CX made sure to explicitly state that the profile was a requirement once they reached their Start Date to have access to training."
+    ],
+    why: "The CX leads with proactive outreach that acknowledges all other tasks are finished, suggests the outstanding profile status might stem from a technical glitch, and provides clear troubleshooting steps such as clicking 'verify.' By reiterating the profile becomes mandatory on start date and offering varied support, the CX ensures the candidate feels supported and builds trust.",
+    wrong: "Setting expectations is important — good thinking. But think about whether you're diagnosing the issue or just nudging. Have you offered to help them complete it directly?"
+  },
+  {
+    type: "Ticket management",
+    badgeClass: "pill-amber",
+    title: "Candidate has an issue and has already contacted the service desk",
+    sit: "The candidate reaches out explaining they are having an issue completing their forms in the IEP and have already contacted the Expert service desk. They are frustrated and have not heard back. They want to know if the CX can help them with the ticket.",
+    hint: "The candidate has already tried two channels. Before sending them to a third, what can you look up right now to get the full picture of what's happening with their ticket?",
+    correct: 1,
+    choices: [
+      "CX lets the candidate know they can call back the Expert Service desk and ask them if they have looked into their ticket about their forms not working. CX follows up and emails the phone number and email of the Expert Service Desk.",
+      "CX lets the candidate vent while looking up ServiceNow to retrieve the ticket information. CX confirms how the issue was presented, when the candidate called, what troubleshooting was completed, and if follow-up calls were missed. Based on ServiceNow, CX sets candidate expectations on resolution. If sent to HR, CX explains involvement and 24-hour timeline. CX documents INC number and core details in QB.",
+      "CX lets the candidate know the service desk team can take up to 24-48 hours to respond. CX encourages the candidate to hold off until they hear back from the service desk, then asks them to let CX know once the issue is resolved."
+    ],
+    why: "This path allows the CX to gain insight on what exactly is going on, avoids the candidate having to make multiple calls to the service desk, and helps set resolution expectations. By documenting the INC number in QB and reviewing ServiceNow, CX is moving the candidate forward proactively.",
+    wrong: "Think about what you have access to right now. Before sending the candidate anywhere else, what can you look up to understand where their issue actually stands?"
+  },
+  {
+    type: "I9 completion",
+    badgeClass: "pill-amber",
+    title: "Candidate's I9 shows complete on their end but not in back office",
+    sit: "The candidate reaches out to ask if their I9 shows as complete. Their onboarding dashboard shows a green checkmark for the I-9 task, but the CX back office and QuickBase does not show it as complete. They are frustrated and emphasize urgency to resolve before their start date the next day.",
+    hint: "The candidate has already reached out to you. What can you do on their behalf — without making them contact yet another person — to get this resolved?",
+    correct: 0,
+    choices: [
+      "CX listens and reassures the candidate they will double check. While on the phone, CX checks QB to confirm if the I9 box is checked. If not completed, CX sends a message to the I9 channel on behalf of the candidate. Pending I9 response, CX sends a follow up email to the candidate CCing I9 support, setting resolution in motion.",
+      "CX checks Backoffice and QB for date stamps and checkmarks. CX then emails and lets the candidate know that they do not see the checkmark and asks the candidate to complete their I9.",
+      "CX checks QB for checkmark and sees that there is none. CX then lets the candidate know they need to reach out to the I9 team by email for additional assistance to help them complete the I9."
+    ],
+    why: "This will allow a faster response for the candidate and creates the highest probability of a one call resolution. Candidates will feel confident in Intuit's ability to assist since they did not have to reach out to multiple people for an answer.",
+    wrong: "The candidate came to you for help — think about how to keep them from having to make yet another call. What can you reach out to on their behalf so this gets resolved in one interaction?"
+  },
+  {
+    type: "Shipping & equipment",
+    badgeClass: "pill-coral",
+    title: "Candidate worried about missing equipment delivery",
+    sit: "The candidate works a full time job and is worried if they'll be home when UPS attempts delivery. The candidate is asking for different options, or if UPS can leave the package on their doorstep if they sign off that it's okay.",
+    hint: "What if none of the standard options work for this candidate? Is there a proactive next step that sees the situation through to completion?",
+    correct: 0,
+    choices: [
+      "CX builds off the suggestion of using an access point, sets the expectation they will follow up with the tracking number when the kit is sent, and provides the UPS website to set up the best access point. CX advises that access points are franchise owned and some may charge a small fee, but candidates can expense it once started. CX follows up and checks the FY27 Domain expert tracking doc to confirm when equipment is picked up.",
+      "CX emails and texts that the kit will arrive the week of start date and they will receive an email to track the package. CX confirms leaving the package on the doorstep is not an option and someone over the age of 18 must be present to sign.",
+      "CX reiterates that unfortunately the candidate is unable to sign off on leaving the equipment as someone 18 or older has to sign for it. CX asks probing questions to better understand the candidate's concerns and learns they are gone 9-5 daily. Upon hearing this, CX mentions the option to choose an access point."
+    ],
+    why: "CX addresses the candidate's concerns, offers multiple solutions, and sets all the expectations of each option so they are prepared. Additionally, the CX sees the situation through to completion by following up and confirming the equipment was delivered.",
+    wrong: "Good start — but are you offering real solutions or just confirming what won't work? Think about what options you can proactively offer and how you can see it through to completion."
+  },
+  {
+    type: "Start date change",
+    badgeClass: "pill-coral",
+    title: "Candidate needs to change their Start Date due to a family conflict",
+    sit: "My current start date is January 30, 2026, but my sister's wedding was recently postponed due to a severe storm, and the new date conflicts. I would like to start the following week. Can I be rescheduled to that date, and what steps do I need to take to confirm this change?",
+    hint: "Before taking any action steps, is there something you should confirm first with the candidate? And given the original start date is this week, what extra step ensures urgency?",
+    correct: 2,
+    choices: [
+      "CX sends the Candidate Start Date change template email to the recruiter and CCs the CX SME and Recruiting SME. CX creates a general note in QB of the change request.",
+      "CX completes all required steps: sends the template email to recruiter with all CCs, creates notes in QB and EH 2.0 tagging the recruiter, includes reason for change and 2-day completion goal, then replies to the candidate confirming the request for February 13th has been submitted and the recruiter will follow up.",
+      "Before taking any steps, CX looks to see if there is a start date the following week. CX lets the candidate know there is no start on 2/6 but there is one on 2/13 and confirms that works. CX then completes all required steps (email with all CCs, reason, 2-day goal, QB/EH 2.0 notes with recruiter tags) and follows up with a Slack to the recruiter to ensure the new date is processed within 48 hours, ahead of January 30th."
+    ],
+    why: "This approach considers the full situation and identifies the next available start date before actioning. By confirming it works for the candidate first, CX eliminates unnecessary follow-up. The proactive Slack ensures changes are processed through all systems quickly and removes the candidate record from the January 30th start date.",
+    wrong: "You've got the documentation right — great. But think about what should be confirmed with the candidate before actioning, and whether the urgency of this week's start date requires an extra communication step."
+  }
+];
+const LETTERS = ['A', 'B', 'C'];
+let cur = 0, correct = 0, results = [], hintShown = false, answered = false, secondAttempt = false;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showIntro() { showScreen('s-intro'); }
+
+function startQuiz() {
+  cur = 0; correct = 0; results = [];
+  showScreen('s-quiz');
+  renderQ();
+}
+
+function restartQuiz() {
+  cur = 0; correct = 0; results = [];
+  renderQ();
+  showScreen('s-quiz');
+}
+
+function renderMap() {
+  const map = document.getElementById('q-map');
+  map.innerHTML = '';
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'q-dot';
+    d.textContent = i + 1;
+    if (i < results.length) d.className = 'q-dot ' + (results[i].correct ? 'done-c' : 'done-w');
+    else if (i === cur) d.className = 'q-dot active';
+    map.appendChild(d);
+  }
+}
+
+function shuffleChoices(q) {
+  // Build indexed choices and shuffle them
+  let indexed = q.choices.map((text, i) => ({ text, originalIndex: i }));
+  for (let i = indexed.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+  }
+  return indexed;
+}
+
+let currentShuffled = [];
+
+function renderQ() {
+  hintShown = false; answered = false; secondAttempt = false;
+  const q = QUESTIONS[cur];
+  document.getElementById('score-disp').textContent = correct;
+  document.getElementById('total-disp').textContent = results.length;
+  document.getElementById('prog').style.width = Math.round((cur / QUESTIONS.length) * 100) + '%';
+  renderMap();
+  renderHost(cur);
+  renderEasyBtn();
+
+  // Shuffle choices and track which shuffled index maps to the correct answer
+  currentShuffled = shuffleChoices(q);
+
+  let html = `
+    <div class="q-card">
+      <h2 class="q-title">${q.title}</h2>
+      <p class="q-sit">${q.sit}</p>
+    </div>
+
+    <p class="choices-label">Which path does your group choose?</p>
+  `;
+
+  html += `
+    <div class="hint-banner" id="hint-banner" style="display:none;">
+      <div class="hint-banner-title">💡 Quick Tip</div>
+      <p class="hint-banner-text">${q.hint}</p>
+    </div>
+  `;
+  html += `<div class="choices-grid-wrap"><div class="choices-grid">`;
+  // Add thinking prompts to visually balance card lengths
+  const thinkingPrompts = [
+    'Think about: Does this fully close the loop?',
+    'Think about: Who else needs to know?',
+    'Think about: Is this the fastest path to resolution?',
+    'Think about: What systems are involved here?',
+    'Think about: Are all stakeholders aligned?',
+    'Think about: Does this create any follow-up risk?',
+  ];
+
+  currentShuffled.forEach((c, i) => {
+    // Calculate a prompt index based on shuffled position
+    const promptIdx = (cur + i + currentShuffled[i].originalIndex) % thinkingPrompts.length;
+    html += `
+      <button class="choice-btn" id="cb-${i}" onclick="answer(${i})">
+        <span class="choice-letter">${LETTERS[i]}</span>
+        <span class="choice-text">${c.text}</span>
+        <span class="choice-prompt">${thinkingPrompts[promptIdx]}</span>
+      </button>
+    `;
+  });
+  html += `</div></div>`;
+
+  html += `<div id="feedback-area"></div>`;
+  document.getElementById('q-content').innerHTML = html;
+}
+
+
+// ===== SOUND EFFECTS ENGINE =====
+const SFX = {
+  _ctx: null,
+
+  _getCtx() {
+    if (!this._ctx) {
+      this._ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Resume if suspended (browser autoplay policy)
+    if (this._ctx.state === 'suspended') this._ctx.resume();
+    return this._ctx;
+  },
+
+  // ✅ CORRECT — triumphant fanfare ding
+  correct() {
+    try {
+      const ctx = this._getCtx();
+      const notes = [523, 659, 784, 1047]; // C E G C (major chord ascend)
+      notes.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+        g.gain.setValueAtTime(0, ctx.currentTime + i * 0.12);
+        g.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.12 + 0.04);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.35);
+        o.start(ctx.currentTime + i * 0.12);
+        o.stop(ctx.currentTime + i * 0.12 + 0.35);
+      });
+      // Add a shimmer layer
+      setTimeout(() => {
+        try {
+          const o2 = ctx.createOscillator();
+          const g2 = ctx.createGain();
+          o2.connect(g2); g2.connect(ctx.destination);
+          o2.type = 'sine';
+          o2.frequency.setValueAtTime(1047, ctx.currentTime);
+          o2.frequency.exponentialRampToValueAtTime(2093, ctx.currentTime + 0.3);
+          g2.gain.setValueAtTime(0.15, ctx.currentTime);
+          g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          o2.start(); o2.stop(ctx.currentTime + 0.4);
+        } catch(e) {}
+      }, 480);
+    } catch(e) {}
+  },
+
+  // ❌ WRONG — classic game show buzzer
+  wrong() {
+    try {
+      const ctx = this._getCtx();
+      // Buzzer: harsh descending tones
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      const dist = ctx.createWaveShaper();
+      // Create distortion curve for buzzer effect
+      const curve = new Float32Array(256);
+      for (let i = 0; i < 256; i++) {
+        const x = (i * 2) / 256 - 1;
+        curve[i] = (Math.PI + 400) * x / (Math.PI + 400 * Math.abs(x));
+      }
+      dist.curve = curve;
+      o.connect(dist); dist.connect(g); g.connect(ctx.destination);
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(180, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.5);
+      g.gain.setValueAtTime(0.4, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+      o.start(); o.stop(ctx.currentTime + 0.55);
+
+      // Second hit for "wah wah" feel
+      setTimeout(() => {
+        try {
+          const o2 = ctx.createOscillator();
+          const g2 = ctx.createGain();
+          o2.connect(g2); g2.connect(ctx.destination);
+          o2.type = 'sawtooth';
+          o2.frequency.setValueAtTime(140, ctx.currentTime);
+          o2.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.4);
+          g2.gain.setValueAtTime(0.3, ctx.currentTime);
+          g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          o2.start(); o2.stop(ctx.currentTime + 0.4);
+        } catch(e) {}
+      }, 300);
+    } catch(e) {}
+  },
+
+  // 🤔 NUDGE — one more try chime (gentle warning)
+  nudge() {
+    try {
+      const ctx = this._getCtx();
+      const notes = [440, 349]; // A then F — slight questioning drop
+      notes.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.2);
+        g.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.2);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.3);
+        o.start(ctx.currentTime + i * 0.2);
+        o.stop(ctx.currentTime + i * 0.2 + 0.3);
+      });
+    } catch(e) {}
+  },
+
+  // 💡 QUICK TIP — sparkle twinkle (replaces old boing)
+  hint() {
+    try {
+      const ctx = this._getCtx();
+      const freqs = [880, 1109, 1319, 1760]; // A major scale highs
+      freqs.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.07);
+        g.gain.setValueAtTime(0.18, ctx.currentTime + i * 0.07);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.07 + 0.25);
+        o.start(ctx.currentTime + i * 0.07);
+        o.stop(ctx.currentTime + i * 0.07 + 0.25);
+      });
+    } catch(e) {}
+  }
+};
+
+function showHint() {
+  hintShown = true;
+  const btn = document.getElementById('hint-btn');
+  const sub = document.getElementById('hint-sub');
+
+  // Press animation
+  btn.style.animation = 'none';
+  btn.offsetHeight;
+  btn.style.animation = 'easyPress 0.15s ease forwards';
+
+  // Play sound effect
+  try {
+    const actx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator();
+    const g = actx.createGain();
+    o.connect(g); g.connect(actx.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(300, actx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(600, actx.currentTime + 0.12);
+    g.gain.setValueAtTime(0.25, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.45);
+    o.start(); o.stop(actx.currentTime + 0.45);
+  } catch(e) {}
+
+  setTimeout(() => {
+    // Disable button
+    btn.disabled = true;
+    btn.style.animation = 'easyUsed 0.5s ease forwards';
+    if (sub) { sub.textContent = 'used!'; sub.classList.add('used'); }
+
+    // Show hint banner above answers
+    const banner = document.getElementById('hint-banner');
+    if (banner) banner.style.display = 'block';
+
+  }, 160);
+}
+
+function answer(idx) {
+  if (answered) return;
+  const q = QUESTIONS[cur];
+  // Map shuffled index back to original to check correctness
+  const originalIndex = currentShuffled[idx].originalIndex;
+  const isCorrect = originalIndex === q.correct;
+
+  if (!isCorrect && !secondAttempt) {
+    // First wrong attempt — give a nudge, re-enable all except the wrong one
+    secondAttempt = true;
+    document.querySelectorAll('.choice-btn').forEach((b, i) => {
+      if (i === idx) {
+        b.classList.add('wrong');
+        b.disabled = true;
+      }
+    });
+    const nudge = document.createElement('div');
+    nudge.id = 'nudge-box';
+    nudge.className = 'feedback-card fb-wrong';
+    nudge.style.marginTop = '1rem';
+    nudge.innerHTML = `
+      <img src="${getWrongGif(cur)}" class="feedback-gif" alt="So close!">
+      <div class="fb-title">
+        <span class="fb-icon icon-w">✗</span>
+        Not quite — one more try!
+      </div>
+      <p>That wasn't the best path. Talk it through as a group — the hint is still available if you need it.</p>
+      <p style="margin-top:8px;font-size:12px;opacity:0.75;">One attempt remaining — choose from the remaining options above.</p>
+    `;
+    showBanner('nudge');
+    document.getElementById('feedback-area').innerHTML = '';
+    document.getElementById('feedback-area').appendChild(nudge);
+    return;
+  }
+
+  // Final answer (correct on any attempt, or second wrong attempt)
+  answered = true;
+  const gotItRight = isCorrect;
+
+  // Find which shuffled position holds the correct original answer
+  const correctShuffledIdx = currentShuffled.findIndex(c => c.originalIndex === q.correct);
+  document.querySelectorAll('.choice-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === idx && !isCorrect) b.classList.add('wrong');
+    if (gotItRight && i === idx) b.classList.add('correct');
+    if (!gotItRight && i === correctShuffledIdx) b.classList.add('correct');
+  });
+
+  if (gotItRight) { showBanner(secondAttempt ? 'correct-second' : 'correct'); } else { showBanner('wrong'); }
+  if (gotItRight) correct++;
+  results.push({ title: q.title, type: q.type, correct: gotItRight, hintUsed: hintShown, tookSecondAttempt: secondAttempt });
+  document.getElementById('score-disp').textContent = correct;
+  document.getElementById('total-disp').textContent = results.length;
+  renderMap();
+
+  const isLast = cur === QUESTIONS.length - 1;
+  let secondAttemptNote = secondAttempt && gotItRight ? '<p style="margin-top:8px;font-size:12px;opacity:0.75;">Got it on the second try — good recovery!</p>' : '';
+  let fb = `
+    <div class="feedback-card ${gotItRight ? 'fb-correct' : 'fb-wrong'}">
+      ${gotItRight ? `<img src="${getCorrectGif(cur)}" class="feedback-gif" alt="Great answer!">` : `<img src="${getWrongGif(cur)}" class="feedback-gif" alt="So close!">`}
+      <div class="fb-title">
+        <span class="fb-icon ${gotItRight ? 'icon-c' : 'icon-w'}">${gotItRight ? '✓' : '✗'}</span>
+        ${gotItRight ? 'Correct — great choice!' : "Here's the best path and why"}
+      </div>
+      <p>${q.why}</p>
+      ${hintShown && gotItRight ? '<p style="margin-top:8px;font-size:12px;opacity:0.75;">You used the hint on this one.</p>' : ''}
+      ${secondAttemptNote}
+      <div style="clear:both;margin-top:14px;"><button class="btn btn-primary" onclick="${isLast ? 'showResults()' : 'nextQ()'}">${isLast ? 'See my results ↗' : 'Next question →'}</button></div>
+    </div>
+  `;
+
+  document.getElementById('feedback-area').innerHTML = fb;
+}
+
+
+// Dynamic correct shoutouts
+const CORRECT_SHOUTOUTS = [
+  { emoji: '🎉', text: 'Outstanding!' },
+  { emoji: '🔥', text: 'On fire!' },
+  { emoji: '⭐', text: 'Nailed it!' },
+  { emoji: '🏆', text: 'Champion move!' },
+  { emoji: '💯', text: 'Perfect path!' },
+  { emoji: '🚀', text: 'Crushing it!' },
+  { emoji: '✨', text: 'Brilliant!' },
+  { emoji: '🎯', text: 'Bullseye!' },
+  { emoji: '💎', text: 'Flawless!' },
+  { emoji: '🌟', text: 'Superstar!' }
+];
+
+const SECOND_TRY_SHOUTOUTS = [
+  { emoji: '💪', text: 'Got there!' },
+  { emoji: '🔄', text: 'Nice recovery!' },
+  { emoji: '👊', text: 'Bounced back!' },
+  { emoji: '🧠', text: 'Figured it out!' },
+  { emoji: '✅', text: 'Second time lucky!' }
+];
+
+const NUDGE_SHOUTOUTS = [
+  { emoji: '🤔', text: 'Think it through...' },
+  { emoji: '🧩', text: 'Discuss as a group!' },
+  { emoji: '💭', text: 'One more try!' },
+  { emoji: '🔍', text: 'Look closer...' },
+  { emoji: '👀', text: 'Consider again...' }
+];
+
+const WRONG_SHOUTOUTS = [
+  { emoji: '💡', text: 'Learning moment!' },
+  { emoji: '📖', text: 'Here&#39;s the why...' },
+  { emoji: '🎓', text: 'Good effort!' },
+  { emoji: '🌱', text: 'Growing from this!' }
+];
+
+function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function launchFireworks() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'fireworks-canvas';
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+  document.body.appendChild(canvas);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+
+  const particles = [];
+  const colors = ['#4ECDC4','#1D9E75','#FFD700','#FF6B6B','#45B7D1','#96CEB4','#FFEAA7','#FF9FF3','#54A0FF','#5F27CD'];
+  const shapes = ['circle','star','heart'];
+
+  function drawStar(ctx, x, y, r) {
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const a = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+      const b = (i * 4 * Math.PI) / 5 + Math.PI / 5 - Math.PI / 2;
+      if (i === 0) ctx.moveTo(x + r * Math.cos(a), y + r * Math.sin(a));
+      ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a));
+      ctx.lineTo(x + (r/2) * Math.cos(b), y + (r/2) * Math.sin(b));
+    }
+    ctx.closePath(); ctx.fill();
+  }
+
+  for (let b = 0; b < 8; b++) {
+    setTimeout(() => {
+      const bx = 0.15 * canvas.width + Math.random() * 0.7 * canvas.width;
+      const by = 0.1 * canvas.height + Math.random() * 0.5 * canvas.height;
+      for (let i = 0; i < 55; i++) {
+        const angle = (Math.PI * 2 / 55) * i + Math.random() * 0.3;
+        const speed = 2 + Math.random() * 7;
+        particles.push({
+          x: bx, y: by,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1,
+          alpha: 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          radius: 2 + Math.random() * 4,
+          shape: shapes[Math.floor(Math.random() * shapes.length)],
+          rotation: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 0.15
+        });
+      }
+    }, b * 200);
+  }
+
+  let frame;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      if (p.alpha <= 0) return;
+      alive = true;
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.08; p.vx *= 0.99;
+      p.alpha -= 0.012;
+      p.rotation += p.rotSpeed;
+      ctx.save();
+      ctx.globalAlpha = Math.max(p.alpha, 0);
+      ctx.fillStyle = p.color;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      if (p.shape === 'star') {
+        drawStar(ctx, 0, 0, p.radius);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+    if (alive) {
+      frame = requestAnimationFrame(animate);
+    } else {
+      cancelAnimationFrame(frame);
+      canvas.remove();
+    }
+  }
+  animate();
+}
+
+function showBanner(type) {
+  document.querySelectorAll('.banner-overlay').forEach(b => b.remove());
+  const banner = document.createElement('div');
+  let shoutout;
+
+  if (type === 'correct') {
+    shoutout = getRandom(CORRECT_SHOUTOUTS);
+    banner.className = 'banner-overlay correct-banner';
+    banner.innerHTML = `<span class="banner-emoji">${shoutout.emoji}</span><div class="banner-text correct-text">${shoutout.text}</div>`;
+    launchFireworks();
+    SFX.correct();
+  } else if (type === 'correct-second') {
+    shoutout = getRandom(SECOND_TRY_SHOUTOUTS);
+    banner.className = 'banner-overlay correct-banner';
+    banner.innerHTML = `<span class="banner-emoji">${shoutout.emoji}</span><div class="banner-text correct-text">${shoutout.text}</div>`;
+    launchFireworks();
+    SFX.correct();
+  } else if (type === 'nudge') {
+    shoutout = getRandom(NUDGE_SHOUTOUTS);
+    banner.className = 'banner-overlay wrong-banner';
+    banner.innerHTML = `<span class="banner-emoji">${shoutout.emoji}</span><div class="banner-text wrong-text">${shoutout.text}</div>`;
+    SFX.nudge();
+  } else {
+    shoutout = getRandom(WRONG_SHOUTOUTS);
+    banner.className = 'banner-overlay wrong-banner';
+    banner.innerHTML = `<span class="banner-emoji">${shoutout.emoji}</span><div class="banner-text wrong-text">${shoutout.text}</div>`;
+    SFX.wrong();
+  }
+
+  document.body.appendChild(banner);
+  setTimeout(() => { if (banner.parentNode) banner.remove(); }, 2200);
+}
+
+function retryQ() { secondAttempt = false; renderQ(); }
+
+// === STAR FIELD BACKGROUND ===
+(function() {
+  const canvas = document.getElementById('stars-bg');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 120; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.3,
+        alpha: Math.random(),
+        speed: Math.random() * 0.008 + 0.002,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  let t = 0;
+  function drawStars() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.01;
+    stars.forEach(s => {
+      const a = 0.3 + 0.5 * Math.abs(Math.sin(t * s.speed * 50 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  window.addEventListener('resize', () => { resize(); initStars(); });
+  resize(); initStars(); drawStars();
+})();
+
+function nextQ() { cur++; renderQ(); }
+
+function showResults() {
+  showScreen('s-results');
+  document.getElementById('final-num').textContent = correct;
+
+  const pct = correct / QUESTIONS.length;
+  let band, bg, borderColor;
+  if (pct >= 0.875) {
+    band = "Excellent work! You nailed almost every scenario. Your instincts around ownership, documentation, and one-call resolution are strong — you're ready for the team game.";
+    bg = '#EAF3DE'; borderColor = '#97C459';
+  } else if (pct >= 0.625) {
+    band = "Solid performance — a few tricky ones caught you out. Review the misses below and focus on the 'why' before joining the group session.";
+    bg = '#FAEEDA'; borderColor = '#EF9F27';
+  } else {
+    band = "Good practice session! Read through the explanations carefully below — these are real situations and the nuances matter. Try again when you're ready.";
+    bg = '#FAECE7'; borderColor = '#F0997B';
+  }
+
+  const bc = document.getElementById('band-card');
+  bc.style.background = bg;
+  bc.style.borderColor = borderColor;
+  bc.innerHTML = `<p>${band}</p>`;
+
+  let rl = '';
+  results.forEach((r, i) => {
+    rl += `
+      <div class="review-row">
+        <div class="r-dot ${r.correct ? 'r-c' : 'r-w'}"></div>
+        <div>
+          <div class="r-title">${r.title} ${r.hintUsed ? '<span class="hint-tag">hint used</span>' : ''}</div>
+          <div class="r-meta">${r.type} · ${r.correct ? 'Correct' : 'Incorrect'}</div>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('review-list').innerHTML = rl;
+
+  const greatCount = results.filter(r => r.correct).length;
+  const tips = [
+    greatCount >= 7
+      ? "Your group consistently chose ownership over deflection — that's the foundation of great CX."
+      : "Focus on taking full ownership of the candidate's issue end-to-end, rather than redirecting to another team.",
+    results.some(r => !r.correct && (r.type === 'Ticket management' || r.type === 'I9 completion'))
+      ? "For ticket and I9 issues: always check ServiceNow first and act as the candidate's advocate — reach out to teams on their behalf."
+      : "Strong ticket management instincts — checking ServiceNow before responding is a great habit.",
+    results.some(r => !r.correct && (r.type === 'Candidate contact' || r.type === 'Candidate decline'))
+      ? "For candidate contact and decline: the full workflow matters — QB + EH 2.0 + SME notification closes every loop."
+      : "Solid documentation instincts — QB + EH 2.0 + SME notification is the complete chain.",
+    "One-call resolution is the goal in every scenario. Ask: what would it take to solve this completely right now, without the candidate having to call again?"
+  ];
+
+  document.getElementById('tips-list').innerHTML = tips.map(t =>
+    `<div class="tip-row"><div class="tip-bullet"></div><div>${t}</div></div>`
+  ).join('');
+}
+</script>
+</body>
+</html>
